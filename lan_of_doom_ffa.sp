@@ -7,7 +7,7 @@ public const Plugin myinfo = {
     url = "https://github.com/lanofdoom/counterstrike-free-for-all"};
 
 static const int kMoneyLostPerTeamkill = 3600;
-static const int kFragsLostPerTeamkill = 1;
+static const int kFragsLostPerTeamkill = 2;
 static const float kTeammateDamageFraction = 0.35;
 
 static ConVar g_friendlyfire_cvar;
@@ -18,7 +18,9 @@ static int g_account_offset;
 //
 
 static bool IsTeamKill(int attacker, int victim) {
-  return attacker != 0 && GetClientTeam(attacker) == GetClientTeam(victim);
+  return attacker != 0 && victim != 0 && IsClientInGame(attacker) &&
+         IsClientInGame(victim) &&
+         GetClientTeam(attacker) == GetClientTeam(victim);
 }
 
 //
@@ -36,6 +38,9 @@ static Action OnTakeDamage(int victim, int& attacker, int& inflictor,
   }
 
   damage /= kTeammateDamageFraction;
+
+  PrintToServer("Adjusted Damage %f", damage);
+
   return Plugin_Changed;
 }
 
@@ -85,9 +90,13 @@ static Action OnPlayerDeath(Handle event, const char[] name,
     return Plugin_Continue;
   }
 
+  PrintToServer("Death %d %d", victim, attacker);
+
   if (!IsTeamKill(victim, attacker)) {
     return Plugin_Continue;
   }
+
+  PrintToServer("Death Not Team Kill", victim, attacker);
 
   int current_frags = GetClientFrags(attacker);
   SetEntProp(attacker, Prop_Data, "m_iFrags",
