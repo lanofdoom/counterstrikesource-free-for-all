@@ -95,11 +95,11 @@ static Action OnPlayerDeath(Handle event, const char[] name,
   }
 
   int current_frags = GetClientFrags(attacker);
-  SetEntProp(attacker, Prop_Data, "m_iFrags",
+  SetEntProp(attacker_client, Prop_Data, "m_iFrags",
              current_frags + kFragsLostPerTeamkill);
 
   int current_account = GetEntData(attacker, g_account_offset);
-  SetEntData(attacker, g_account_offset,
+  SetEntData(attacker_client, g_account_offset,
              current_account + kMoneyLostPerTeamkill);
 
   return Plugin_Continue;
