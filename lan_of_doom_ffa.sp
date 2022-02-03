@@ -1,7 +1,8 @@
 #include <sdkhooks>
 #include <sourcemod>
 
-public const Plugin myinfo = {
+public
+const Plugin myinfo = {
     name = "Free For All", author = "LAN of DOOM",
     description = "Enables free for all scoring and damage", version = "1.0.0",
     url = "https://github.com/lanofdoom/counterstrike-free-for-all"};
@@ -39,8 +40,6 @@ static Action OnTakeDamage(int victim, int& attacker, int& inflictor,
 
   damage /= kTeammateDamageFraction;
 
-  PrintToServer("Adjusted Damage %f", damage);
-
   return Plugin_Changed;
 }
 
@@ -56,6 +55,7 @@ static Action OnMessage(UserMsg msg_id, BfRead msg, const int[] players,
   if (StrContains(message, "careful_around_teammates") != -1 ||
       StrContains(message, "Killed_Teammate") != -1 ||
       StrContains(message, "spotted_a_friend") != -1 ||
+      StrContains(message, "spotted_an_enemy") != -1 ||
       StrContains(message, "teammate_attack") != -1 ||
       StrContains(message, "try_not_to_injure_teammates") != -1) {
     return Plugin_Handled;
@@ -90,13 +90,9 @@ static Action OnPlayerDeath(Handle event, const char[] name,
     return Plugin_Continue;
   }
 
-  PrintToServer("Death %d %d", victim, attacker);
-
   if (!IsTeamKill(victim, attacker)) {
     return Plugin_Continue;
   }
-
-  PrintToServer("Death Not Team Kill", victim, attacker);
 
   int current_frags = GetClientFrags(attacker);
   SetEntProp(attacker, Prop_Data, "m_iFrags",
@@ -106,6 +102,10 @@ static Action OnPlayerDeath(Handle event, const char[] name,
   SetEntData(attacker, g_account_offset,
              current_account + kMoneyLostPerTeamkill);
 
+  PrintToServer("%d %d %d %d", current_frags,
+                current_frags + kFragsLostPerTeamkill,
+                current_account + kMoneyLostPerTeamkill);
+
   return Plugin_Continue;
 }
 
@@ -113,11 +113,13 @@ static Action OnPlayerDeath(Handle event, const char[] name,
 // Forwards
 //
 
-public void OnClientPutInServer(int client) {
+public
+void OnClientPutInServer(int client) {
   SDKHook(client, SDKHook_OnTakeDamage, OnTakeDamage);
 }
 
-public void OnPluginStart() {
+public
+void OnPluginStart() {
   g_friendlyfire_cvar = FindConVar("mp_friendlyfire");
 
   g_account_offset = FindSendPropInfo("CCSPlayer", "m_iAccount");
