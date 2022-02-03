@@ -1,8 +1,7 @@
 #include <sdkhooks>
 #include <sourcemod>
 
-public
-const Plugin myinfo = {
+public const Plugin myinfo = {
     name = "Free For All", author = "LAN of DOOM",
     description = "Enables free for all scoring and damage", version = "1.0.0",
     url = "https://github.com/lanofdoom/counterstrike-free-for-all"};
@@ -19,8 +18,8 @@ static int g_account_offset;
 //
 
 static bool IsTeamKill(int attacker, int victim) {
-  return attacker != 0 && victim != 0 && IsClientInGame(attacker) &&
-         IsClientInGame(victim) &&
+  return attacker != 0 && victim != 0 && attacker != victim &&
+         IsClientInGame(attacker) && IsClientInGame(victim) &&
          GetClientTeam(attacker) == GetClientTeam(victim);
 }
 
@@ -109,13 +108,11 @@ static Action OnPlayerDeath(Handle event, const char[] name,
 // Forwards
 //
 
-public
-void OnClientPutInServer(int client) {
+public void OnClientPutInServer(int client) {
   SDKHook(client, SDKHook_OnTakeDamage, OnTakeDamage);
 }
 
-public
-void OnPluginStart() {
+public void OnPluginStart() {
   g_friendlyfire_cvar = FindConVar("mp_friendlyfire");
 
   g_account_offset = FindSendPropInfo("CCSPlayer", "m_iAccount");
@@ -128,7 +125,7 @@ void OnPluginStart() {
     ThrowError("Initialization failed");
   }
 
-  HookEvent("player_death", OnPlayerDeath);
+  HookEvent("player_death", OnPlayerDeath, EventHookMode_Pre);
 
   HookUserMessage(text_msg, OnMessage, true);
   HookUserMessage(hint_text, OnMessage, true);
