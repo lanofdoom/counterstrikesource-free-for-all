@@ -90,7 +90,7 @@ static Action OnPlayerDeath(Handle event, const char[] name,
     return Plugin_Continue;
   }
 
-  if (!IsTeamKill(victim, attacker)) {
+  if (!IsTeamKill(victim_client, attacker_client)) {
     return Plugin_Continue;
   }
 
@@ -101,10 +101,6 @@ static Action OnPlayerDeath(Handle event, const char[] name,
   int current_account = GetEntData(attacker, g_account_offset);
   SetEntData(attacker, g_account_offset,
              current_account + kMoneyLostPerTeamkill);
-
-  PrintToServer("%d %d %d %d", current_frags,
-                current_frags + kFragsLostPerTeamkill,
-                current_account + kMoneyLostPerTeamkill);
 
   return Plugin_Continue;
 }
