@@ -1,6 +1,6 @@
 # LAN of DOOM Free For All Plugin
-A SourceMod plugin that enables free-for-all scoring and damage for CS:S and
-CS:GO servers if friendly fire is enabled.
+A SourceMod plugin that enables free-for-all scoring and damage for CS:S servers
+if friendly fire is enabled.
 
 Note: Bots will continue to only target members of the opposing team.
 
