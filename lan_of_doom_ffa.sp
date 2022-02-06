@@ -18,7 +18,8 @@ static int g_account_offset;
 //
 
 static bool IsTeamKill(int attacker, int victim) {
-  return attacker != 0 && victim != 0 && attacker != victim &&
+  return attacker != 0 && attacker <= MaxClients && victim != 0 &&
+         victim <= MaxClients && attacker != victim &&
          IsClientInGame(attacker) && IsClientInGame(victim) &&
          GetClientTeam(attacker) == GetClientTeam(victim);
 }
