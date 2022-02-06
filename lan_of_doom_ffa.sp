@@ -125,7 +125,7 @@ public void OnPluginStart() {
     ThrowError("Initialization failed");
   }
 
-  HookEvent("player_death", OnPlayerDeath, EventHookMode_Pre);
+  HookEvent("player_death", OnPlayerDeath);
 
   HookUserMessage(text_msg, OnMessage, true);
   HookUserMessage(hint_text, OnMessage, true);
