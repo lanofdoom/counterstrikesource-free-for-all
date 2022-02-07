@@ -3,7 +3,7 @@
 
 public const Plugin myinfo = {
     name = "Free For All", author = "LAN of DOOM",
-    description = "Enables free for all scoring and damage", version = "1.0.1",
+    description = "Enables free for all scoring and damage", version = "1.0.0",
     url = "https://github.com/lanofdoom/counterstrikesource-free-for-all"};
 
 static const int kMoneyLostPerTeamkill = 3600;
